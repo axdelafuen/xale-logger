@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/home/axlr/projects/xale-logger/build/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

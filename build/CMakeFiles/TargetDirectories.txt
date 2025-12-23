@@ -1,3 +1,0 @@
-/home/axlr/projects/xale-logger/build/CMakeFiles/xale-logger-debug.dir
-/home/axlr/projects/xale-logger/build/CMakeFiles/edit_cache.dir
-/home/axlr/projects/xale-logger/build/CMakeFiles/rebuild_cache.dir

@@ -1,24 +1,31 @@
 cmake_minimum_required(VERSION 3.10)
-project(XaleLoggerDebug VERSION 1.0.0 LANGUAGES CXX)
+project(XaleLogger VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
+add_library(xale-logger STATIC
+    src/LoggerConfig.cpp
+)
 
-set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
-set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
-set(EXAMPLES_DIR ${CMAKE_SOURCE_DIR}/examples)
-set(LIB_DIR ${CMAKE_SOURCE_DIR}/lib)
-
-file(GLOB_RECURSE SOURCES "${SRC_DIR}/*.cpp" "${EXAMPLES_DIR}/*.cpp")
-
-add_executable(xale-logger-debug ${SOURCES})
-
-target_include_directories(xale-logger-debug PRIVATE ${INCLUDE_DIR})
+target_include_directories(xale-logger PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
 
 if(UNIX)
-    target_compile_options(xale-logger-debug PRIVATE -Wall -Wextra -pthread)
+    target_compile_options(xale-logger PRIVATE -Wall -Wextra)
+    target_link_libraries(xale-logger PUBLIC pthread)
+endif()
+
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    add_executable(xale-logger-debug
+        examples/BasicUsage.cpp
+    )
+    
+    target_link_libraries(xale-logger-debug PRIVATE xale-logger)
+    
+    set_target_properties(xale-logger-debug PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
 endif()

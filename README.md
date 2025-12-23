@@ -31,8 +31,7 @@ FetchContent_Declare(xale-logger
     GIT_TAG main)
 FetchContent_MakeAvailable(xale-logger)
 
-# Link to your executable
-target_link_libraries(your_target PRIVATE xale-logger pthread)
+target_link_libraries(your_target PRIVATE xale-logger)
 ```
 
 ## Configuration

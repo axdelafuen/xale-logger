@@ -34,19 +34,6 @@ FetchContent_MakeAvailable(xale-logger)
 target_link_libraries(your_target PRIVATE xale-logger)
 ```
 
-## Configuration
-
-```cpp
-// Enable/disable debug level
-XaleLogger::Logger<void>::setIsDebugEnable(true);
-
-// Enable/disable console output
-XaleLogger::Logger<void>::setLogToConsole(true);
-
-// Enable/disable file output (not yet implemented)
-XaleLogger::Logger<void>::setLogToFile(false);
-```
-
 ## Build the example
 
 ```bash
@@ -55,6 +42,41 @@ cmake ..
 make
 ./xale-logger-debug
 ```
+
+## Usage
+
+```cpp
+auto& logger = Xale::Logger::Logger<T>::getInstance();
+logger.info("Information message");
+logger.debug("Debug message");
+logger.error("Error message");
+```
+
+Output:
+
+```
+<Black-colored>[YYYY-MM-DD hh:mm:ss] [INFORMATION] [Namespace::T] Information message<End-color>
+<Cyan-colored>[YYYY-MM-DD hh:mm:ss] [DEBUG] [Namespace::T] Debug message<End-color>
+<Red-colored>[YYYY-MM-DD hh:mm:ss] [ERROR] [Namespace::T] Error message<End-color>
+```
+
+**Configuration:**
+
+```cpp
+// Enable/disable debug level
+Xale::Logger::Logger<void>::setIsDebugEnable(true);
+
+// Enable/disable console output
+Xale::Logger::Logger<void>::setLogToConsole(true);
+
+// Enable/disable file output
+Xale::Logger::Logger<void>::setLogToFile(false);
+Xale::Logger::Logger<void>::setLogFilePath("path/to/logfile.log");
+```
+
+**File output:**
+
+_WIP_
 
 ## Requirements
 

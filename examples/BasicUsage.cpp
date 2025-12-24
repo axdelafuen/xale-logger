@@ -7,11 +7,12 @@ class TestingClass
     public:
         TestingClass();
         void run();
+        void debug();
     private:
-        XaleLogger::Logger<TestingClass>& logger;
+        Xale::Logger::Logger<TestingClass>& logger;
 };
 
-TestingClass::TestingClass() : logger(XaleLogger::Logger<TestingClass>::getInstance())
+TestingClass::TestingClass() : logger(Xale::Logger::Logger<TestingClass>::getInstance())
 {
     logger.debug("TestingClass created!");
 }
@@ -21,9 +22,14 @@ void TestingClass::run()
     logger.info("Testing class is running...");
 }
 
+void TestingClass::debug() 
+{
+    logger.debug("This is a debug message from TestingClass.");
+}
+
 int main(int argc, char *argv[])
 {
-    auto& logger = XaleLogger::Logger<void>::getInstance();
+    auto& logger = Xale::Logger::Logger<void>::getInstance();
 
     if (argc > 1)
     {
@@ -31,14 +37,22 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    // Disable globally debug level
-    //XaleLogger::Logger<void>::setIsDebugEnable(false);
-
+	// Basic class logging usage
     TestingClass testVar;
     testVar.run();
 
+	// Basic void logging usage
     logger.debug("Void debug in main!");
+
+	// Setup file logging
+	Xale::Logger::Logger<void>::setLogToFile(true);
+    Xale::Logger::Logger<void>::setLogFilePath(".\\today.log");
+	logger.info("This info should also go to the log file.");
+
+    // Disable globally debug level
+    Xale::Logger::Logger<void>::setIsDebugEnable(false);
+	logger.debug("This debug should NOT appear. (neither in the terminal nor in the file)");
+    testVar.debug();
 
     return 0;
 }
-

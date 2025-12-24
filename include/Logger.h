@@ -7,19 +7,21 @@
 #include <chrono>
 #include <memory>
 #include <iomanip>
-#include <cxxabi.h>
+#if defined(__linux__) || defined(linux) || defined(__GNUG__)
+    #include <cxxabi.h>
+#endif
 
 #include "LoggerConfig.h"
 
-#define STRING_COLOR_BLACK "\033[0m"
-#define STRING_COLOR_CYAN "\033[36m"
-#define STRING_COLOR_ORANGE "\033[33m"
-#define STRING_COLOR_RED "\033[31m"
+constexpr auto STRING_COLOR_BLACK = "\033[0m";
+constexpr auto STRING_COLOR_CYAN = "\033[36m";
+constexpr auto STRING_COLOR_ORANGE = "\033[33m";
+constexpr auto STRING_COLOR_RED = "\033[31m";
 
-namespace XaleLogger
+namespace Xale::Logger
 {
     /**
-     * Logger 
+	 * Xale Logger instance class
      */
     template<typename T>
     class Logger
@@ -30,6 +32,7 @@ namespace XaleLogger
             static void setIsDebugEnable(bool enable);
             static void setLogToConsole(bool enable);
             static void setLogToFile(bool enable);
+            static void setLogFilePath(const std::string& filePath);
             void log(LogLevel level, const std::string& message);
             void debug(const std::string& message);
             void info(const std::string& message);
@@ -44,6 +47,7 @@ namespace XaleLogger
             std::string levelToString(LogLevel level);
             std::string getLevelColor(LogLevel level);
             std::string getClassName();
+            bool isLogFilePathSet();
     };
 
 
@@ -59,7 +63,9 @@ namespace XaleLogger
     // -----------------------------------------------------
 
     /**
-     * TODO: write comments
+     * Retrieve the singleton instance of Logger
+     * 
+	 * @return Logger<T>& The singleton instance
      */
     template<typename T>
     Logger<T>& Logger<T>::getInstance()
@@ -73,6 +79,8 @@ namespace XaleLogger
 
     /**
      * Enable or disable the debug level
+     * 
+	 * @param enable true to enable debug level, false to disable
      */
     template<typename T>
     void Logger<T>::setIsDebugEnable(bool enable)
@@ -82,6 +90,8 @@ namespace XaleLogger
     
     /**
      * Enable or disable the console logging behavior
+     * 
+	 * @param enable true to enable console logging, false to disable
      */
     template<typename T>
     void Logger<T>::setLogToConsole(bool enable)
@@ -91,6 +101,8 @@ namespace XaleLogger
 
     /**
      * Enable or disable the file logging behavior
+     * 
+	 * @param enable true to enable file logging, false to disable
      */
     template<typename T>
     void Logger<T>::setLogToFile(bool enable)
@@ -99,7 +111,30 @@ namespace XaleLogger
     }
 
     /**
+     * Set the log file path
+     * 
+	 * If the file path is empty, the log file will be closed
+     * 
+	 * Else the log file will be opened in append mode
+     * 
+	 * @param filePath The log file path
+     */
+	template<typename T>
+    void Logger<T>::setLogFilePath(const std::string& filePath)
+    {
+		if (filePath.empty())
+			LoggerConfig::logFile.close();
+        else
+        {
+			LoggerConfig::logFile.open(filePath, std::ios::app);
+        }
+    }
+
+    /**
      * Log a message
+     * 
+	 * @param level The log level
+	 * @param message The message to log
      */
     template<typename T>
     void Logger<T>::log(LogLevel level, const std::string& message)
@@ -125,12 +160,23 @@ namespace XaleLogger
 
         if (LoggerConfig::logToFile)
         {
-            // TODO: Write `logMessage` to `logFile`
+            if (isLogFilePathSet())
+				LoggerConfig::logFile << logMessage << std::endl;
+            else
+            {
+                std::cerr 
+                    << STRING_COLOR_RED
+                    << "[Logger Error] Log file path is not set."
+                    << STRING_COLOR_BLACK << std::endl;
+            }
         }
     }
 
     /**
-     * @see Log a message as debug
+	 * Log a message as debug
+     * 
+	 * @see log
+     * @param message The message to log
      */
     template<typename T>
     void Logger<T>::debug(const std::string& message)
@@ -139,7 +185,10 @@ namespace XaleLogger
     }
     
     /**
-     * @see Log a message as information
+	 * Log a message as information
+     * 
+	 * @see log
+     * @param message The message to log
      */
     template<typename T>
     void Logger<T>::info(const std::string& message)
@@ -148,7 +197,10 @@ namespace XaleLogger
     }
     
     /**
-     * @see Log a message as warning
+	 * Log a message as warning
+     * 
+	 * @see log
+     * @param message The message to log
      */
     template<typename T>
     void Logger<T>::warning(const std::string& message)
@@ -157,7 +209,10 @@ namespace XaleLogger
     }
     
     /**
-     * @see Log a message as error
+	 * Log a message as error
+     * 
+	 * @see log
+     * @param message The message to log
      */
     template<typename T>
     void Logger<T>::error(const std::string& message)
@@ -170,7 +225,9 @@ namespace XaleLogger
     // -----------------------------------------------------
     
     /**
-     * TODO: write comments
+	 * Get the current timestamp as a formatted string
+     * 
+	 * @return std::string The current timestamp in "YYYY-MM-DD HH:MM:SS.mmm" format
      */
     template<typename T>
     std::string Logger<T>::getCurrentTimestamp()
@@ -187,7 +244,9 @@ namespace XaleLogger
     }
 
     /**
-     * TODO: write comments
+	 * Get the string representation of a log level
+     * 
+	 * @return std::string The string representation of the log level
      */
     template<typename T>
     std::string Logger<T>::levelToString(LogLevel level)
@@ -203,7 +262,9 @@ namespace XaleLogger
     }
 
     /**
-     * TODO: write comments
+	 * Get the color code for a log level
+     * 
+	 * @return std::string The color code for the log level
      */
     template<typename T>
     std::string Logger<T>::getLevelColor(LogLevel level)
@@ -219,12 +280,16 @@ namespace XaleLogger
     }
 
     /**
-     * TODO: write comments
+	 * Get the class name of the template type T
+     * 
+	 * @return std::string The class name of T
      */
     template<typename T>
     std::string Logger<T>::getClassName()
     {
         const char* mangled = typeid(T).name();
+
+#if defined(__linux__) || defined(linux) || defined(__GNUG__)
         int status = 0;
         char* fullNameAbi = abi::__cxa_demangle(mangled, 0, 0, &status);
         
@@ -238,8 +303,32 @@ namespace XaleLogger
             return fullName.substr(pos + 1);
 
         return fullName;
+
+#elif defined(_WIN32)
+        std::string fullName(mangled);
+        size_t pos = fullName.find_last_of(" :");
+
+        if (pos != std::string::npos)
+            return fullName.substr(pos + 1);
+
+#else
+		std::string fullName(mangled);
+
+#endif
+        return fullName;
+    }
+
+
+    /**
+	* Check if the log file path is set
+    * 
+	* @return true if the log file path is set, false otherwise
+    */
+    template<typename T>
+    bool Logger<T>::isLogFilePathSet()
+    {
+        return LoggerConfig::logFile.is_open();
     }
 }
 
 #endif // LOGGER_H
-

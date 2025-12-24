@@ -126,5 +126,5 @@ int main()
     }
 
     std::cout << std::endl << "All tests passeded (" << passed << "/" << total << " passed)" << std::endl;
-    return 1;
+    return 0;
 }

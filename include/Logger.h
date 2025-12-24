@@ -7,7 +7,7 @@
 #include <chrono>
 #include <memory>
 #include <iomanip>
-#ifdef __linux__ || linux || __GNUG__
+#if defined(__linux__) || defined(linux) || defined(__GNUG__)
     #include <cxxabi.h>
 #endif
 
@@ -289,7 +289,7 @@ namespace Xale::Logger
     {
         const char* mangled = typeid(T).name();
 
-#ifdef __linux__ || linux || __GNUG__
+#if defined(__linux__) || defined(linux) || defined(__GNUG__)
         int status = 0;
         char* fullNameAbi = abi::__cxa_demangle(mangled, 0, 0, &status);
         
@@ -302,9 +302,9 @@ namespace Xale::Logger
         if (pos != std::string::npos)
             return fullName.substr(pos + 1);
 
-        return fullName
+        return fullName;
 
-#elif _WIN32
+#elif defined(_WIN32)
         std::string fullName(mangled);
         size_t pos = fullName.find_last_of(" :");
 

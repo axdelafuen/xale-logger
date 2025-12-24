@@ -6,7 +6,7 @@
 #include <thread>
 #include <fstream>
 
-namespace XaleLogger
+namespace Xale::Logger
 {
     /**
      * Log level enumeration type

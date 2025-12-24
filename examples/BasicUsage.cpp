@@ -8,10 +8,10 @@ class TestingClass
         TestingClass();
         void run();
     private:
-        XaleLogger::Logger<TestingClass>& logger;
+        Xale::Logger::Logger<TestingClass>& logger;
 };
 
-TestingClass::TestingClass() : logger(XaleLogger::Logger<TestingClass>::getInstance())
+TestingClass::TestingClass() : logger(Xale::Logger::Logger<TestingClass>::getInstance())
 {
     logger.debug("TestingClass created!");
 }
@@ -23,7 +23,7 @@ void TestingClass::run()
 
 int main(int argc, char *argv[])
 {
-    auto& logger = XaleLogger::Logger<void>::getInstance();
+    auto& logger = Xale::Logger::Logger<void>::getInstance();
 
     if (argc > 1)
     {

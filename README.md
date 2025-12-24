@@ -34,7 +34,33 @@ FetchContent_MakeAvailable(xale-logger)
 target_link_libraries(your_target PRIVATE xale-logger)
 ```
 
-## Configuration
+## Build the example
+
+```bash
+mkdir build && cd build
+cmake ..
+make
+./xale-logger-debug
+```
+
+## Usage
+
+```cpp
+auto& logger = XaleLogger::Logger<T>::getInstance();
+logger.info("Information message");
+logger.debug("Debug message");
+logger.error("Error message");
+```
+
+Output:
+
+```
+<Black-colored>[YYYY-MM-DD hh:mm:ss] [INFORMATION] [Namespace::T] Information message<End-color>
+<Cyan-colored>[YYYY-MM-DD hh:mm:ss] [DEBUG] [Namespace::T] Debug message<End-color>
+<Red-colored>[YYYY-MM-DD hh:mm:ss] [ERROR] [Namespace::T] Error message<End-color>
+```
+
+**Configuration:**
 
 ```cpp
 // Enable/disable debug level
@@ -47,14 +73,9 @@ XaleLogger::Logger<void>::setLogToConsole(true);
 XaleLogger::Logger<void>::setLogToFile(false);
 ```
 
-## Build the example
+**File output:**
 
-```bash
-mkdir build && cd build
-cmake ..
-make
-./xale-logger-debug
-```
+_WIP_
 
 ## Requirements
 

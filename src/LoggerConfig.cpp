@@ -1,6 +1,6 @@
 #include "LoggerConfig.h"
 
-namespace XaleLogger
+namespace Xale::Logger
 {
     // -----------------------------------------------------
     // LoggerConfig members definitions

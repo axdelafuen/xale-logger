@@ -19,13 +19,21 @@ if(UNIX)
 endif()
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    # Debug executable
     add_executable(xale-logger-debug
         examples/BasicUsage.cpp
     )
-    
     target_link_libraries(xale-logger-debug PRIVATE xale-logger)
-    
     set_target_properties(xale-logger-debug PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+
+    # Tests executable
+    add_executable(xale-logger-tests
+        tests/LoggerTests.cpp
+        tests/TestsHelper.h)
+    target_link_libraries(xale-logger-tests PRIVATE xale-logger)
+    set_target_properties(xale-logger-tests PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 endif()

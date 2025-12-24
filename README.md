@@ -46,7 +46,7 @@ make
 ## Usage
 
 ```cpp
-auto& logger = XaleLogger::Logger<T>::getInstance();
+auto& logger = Xale::Logger::Logger<T>::getInstance();
 logger.info("Information message");
 logger.debug("Debug message");
 logger.error("Error message");
@@ -64,13 +64,14 @@ Output:
 
 ```cpp
 // Enable/disable debug level
-XaleLogger::Logger<void>::setIsDebugEnable(true);
+Xale::Logger::Logger<void>::setIsDebugEnable(true);
 
 // Enable/disable console output
-XaleLogger::Logger<void>::setLogToConsole(true);
+Xale::Logger::Logger<void>::setLogToConsole(true);
 
-// Enable/disable file output (not yet implemented)
-XaleLogger::Logger<void>::setLogToFile(false);
+// Enable/disable file output
+Xale::Logger::Logger<void>::setLogToFile(false);
+Xale::Logger::Logger<void>::setLogFilePath("path/to/logfile.log");
 ```
 
 **File output:**

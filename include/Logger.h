@@ -32,6 +32,7 @@ namespace Xale::Logger
             static void setIsDebugEnable(bool enable);
             static void setLogToConsole(bool enable);
             static void setLogToFile(bool enable);
+            static void setLogFilePath(const std::string& filePath);
             void log(LogLevel level, const std::string& message);
             void debug(const std::string& message);
             void info(const std::string& message);
@@ -46,6 +47,7 @@ namespace Xale::Logger
             std::string levelToString(LogLevel level);
             std::string getLevelColor(LogLevel level);
             std::string getClassName();
+            bool isLogFilePathSet();
     };
 
 
@@ -109,6 +111,26 @@ namespace Xale::Logger
     }
 
     /**
+     * Set the log file path
+     * 
+	 * If the file path is empty, the log file will be closed
+     * 
+	 * Else the log file will be opened in append mode
+     * 
+	 * @param filePath The log file path
+     */
+	template<typename T>
+    void Logger<T>::setLogFilePath(const std::string& filePath)
+    {
+		if (filePath.empty())
+			LoggerConfig::logFile.close();
+        else
+        {
+			LoggerConfig::logFile.open(filePath, std::ios::app);
+        }
+    }
+
+    /**
      * Log a message
      * 
 	 * @param level The log level
@@ -138,7 +160,15 @@ namespace Xale::Logger
 
         if (LoggerConfig::logToFile)
         {
-            // TODO: Write `logMessage` to `logFile`
+            if (isLogFilePathSet())
+				LoggerConfig::logFile << logMessage << std::endl;
+            else
+            {
+                std::cerr 
+                    << STRING_COLOR_RED
+                    << "[Logger Error] Log file path is not set."
+                    << STRING_COLOR_BLACK << std::endl;
+            }
         }
     }
 
@@ -282,6 +312,18 @@ namespace Xale::Logger
             return fullName.substr(pos + 1);
 
         return fullName;
+    }
+
+
+    /**
+	* Check if the log file path is set
+    * 
+	* @return true if the log file path is set, false otherwise
+    */
+    template<typename T>
+    bool Logger<T>::isLogFilePathSet()
+    {
+        return LoggerConfig::logFile.is_open();
     }
 }
 

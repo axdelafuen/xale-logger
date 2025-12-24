@@ -1,4 +1,4 @@
-name: XaleLogger CMake build
+name: XaleLogger CMake build & test
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
   BUILD_TYPE: Debug
 
 jobs:
-  build:
+  build-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,3 +21,6 @@ jobs:
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Run Tests
+      run: ${{github.workspace}}/build/xale-logger-tests

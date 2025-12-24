@@ -74,10 +74,6 @@ Xale::Logger::Logger<void>::setLogToFile(false);
 Xale::Logger::Logger<void>::setLogFilePath("path/to/logfile.log");
 ```
 
-**File output:**
-
-_WIP_
-
 ## Requirements
 
 - pthread support

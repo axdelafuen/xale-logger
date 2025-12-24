@@ -1,4 +1,4 @@
-name: XaleLogger CMake build
+name: XaleLogger CMake build & test
 
 on:
   push:

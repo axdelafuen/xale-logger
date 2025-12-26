@@ -154,8 +154,15 @@ namespace Xale::Logger
 
         if (LoggerConfig::logToConsole)
         {
-            std::cout << getLevelColor(level) << logMessage
-                     << STRING_COLOR_BLACK << std::endl;
+            if (level == LogLevel::ERROR)
+            {
+                std::cerr << getLevelColor(level) << logMessage
+                    << STRING_COLOR_BLACK << std::endl;
+            }
+            else {
+                std::cout << getLevelColor(level) << logMessage
+                    << STRING_COLOR_BLACK << std::endl;
+            }
         }
 
         if (LoggerConfig::logToFile)

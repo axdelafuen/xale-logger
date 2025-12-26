@@ -8,6 +8,7 @@ class TestingClass
         TestingClass();
         void run();
         void debug();
+        void crash();
     private:
         Xale::Logger::Logger<TestingClass>& logger;
 };
@@ -25,6 +26,11 @@ void TestingClass::run()
 void TestingClass::debug() 
 {
     logger.debug("This is a debug message from TestingClass.");
+}
+
+void TestingClass::crash()
+{
+    logger.error("Unhandled crash !!");
 }
 
 int main(int argc, char *argv[])
@@ -46,13 +52,16 @@ int main(int argc, char *argv[])
 
 	// Setup file logging
 	Xale::Logger::Logger<void>::setLogToFile(true);
-    Xale::Logger::Logger<void>::setLogFilePath(".\\today.log");
-	logger.info("This info should also go to the log file.");
+    Xale::Logger::Logger<void>::setLogFilePath("today.log");
+	logger.info("This info should go to the log file.");
 
     // Disable globally debug level
     Xale::Logger::Logger<void>::setIsDebugEnable(false);
 	logger.debug("This debug should NOT appear. (neither in the terminal nor in the file)");
     testVar.debug();
+
+    // Test error on stderr
+    testVar.crash();
 
     return 0;
 }

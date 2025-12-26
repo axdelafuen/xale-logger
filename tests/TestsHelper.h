@@ -30,6 +30,30 @@ namespace Xale::Logger::Tests
             std::ostringstream stream_;
             std::streambuf* oldBuf_;
     };
+
+    /**
+     * Helper to capture std::cerr output for a scoped block.
+     */
+    class CerrCapture
+    {
+        public:
+            CerrCapture() : oldBuf_(std::cerr.rdbuf(stream_.rdbuf()))
+            {}
+
+            ~CerrCapture()
+            {
+                std::cerr.rdbuf(oldBuf_);
+            }
+
+            std::string str() const
+            {
+                return stream_.str();
+            }
+
+        private:
+            std::ostringstream stream_;
+            std::streambuf* oldBuf_;
+    };
 }
 
 #endif // XALE_LOGGER_TESTS_HELPER_CPP

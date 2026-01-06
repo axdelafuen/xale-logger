@@ -127,13 +127,13 @@ namespace Xale::Logger
 			LoggerConfig::logFile.close();
         else
         {
-          auto pos = filePath.rfind("/");
-          if (pos != std::string::npos) 
-          {
-            std::filesystem::path fsPath = filePath.substr(0, pos);
-            if (!std::filesystem::exists(fsPath)) 
-              std::filesystem::create_directories(fsPath);
-          }
+            auto pos = filePath.rfind("/");
+            if (pos != std::string::npos) 
+            {
+                std::filesystem::path fsPath = filePath.substr(0, pos);
+                if (!std::filesystem::exists(fsPath)) 
+                    std::filesystem::create_directories(fsPath);
+            }
 			LoggerConfig::logFile.open(filePath, std::ios::app);
         }
     }

@@ -7,6 +7,7 @@
 #include <chrono>
 #include <memory>
 #include <iomanip>
+#include <filesystem>
 #if defined(__linux__) || defined(linux) || defined(__GNUG__)
     #include <cxxabi.h>
 #endif
@@ -126,6 +127,13 @@ namespace Xale::Logger
 			LoggerConfig::logFile.close();
         else
         {
+          auto pos = filePath.rfind("/");
+          if (pos != std::string::npos) 
+          {
+            std::filesystem::path fsPath = filePath.substr(0, pos);
+            if (!std::filesystem::exists(fsPath)) 
+              std::filesystem::create_directories(fsPath);
+          }
 			LoggerConfig::logFile.open(filePath, std::ios::app);
         }
     }
